@@ -95,26 +95,27 @@ async def stats(_, message):
 
 async def start(client, message):
     buttons = ButtonMaker()
-    buttons.ubutton("Repo", "https://www.github.com/anasty17/mirror-leech-telegram-bot")
-    buttons.ubutton("Owner", "https://t.me/anas_tayyar")
+    buttons.ubutton("🛠️Repo", "https://www.github.com/anasty17/mirror-leech-telegram-bot")
+    buttons.ubutton("🏂Owner", "https://t.me/unil_vr")
+    buttons.ubutton("🖥️Channel", "https://t.me/xyradch")
     reply_markup = buttons.build_menu(2)
     if await CustomFilters.authorized(client, message):
         start_string = f"""
-This bot can mirror all your links|files|torrents to Google Drive or any rclone cloud or to telegram.
-Type /{BotCommands.HelpCommand} to get a list of available commands
+Mei Yong Hua sudah aktif selama {get_readable_time(time() - botStartTime)}
+ketik /{BotCommands.HelpCommand} untuk info bantuan selengkapnya
 """
         await sendMessage(message, start_string, reply_markup)
     else:
         await sendMessage(
             message,
-            "You Are not authorized user! Deploy your own mirror-leech bot",
+            "Maaf Mei gakenal kamu atau mungkin kamu gak punya otiritas? Pakek Mei di grup, bukan PM!",
             reply_markup,
         )
 
 
 async def restart(_, message):
     Intervals["stopAll"] = True
-    restart_message = await sendMessage(message, "Restarting...")
+    restart_message = await sendMessage(message, "Memulai ulang...")
     if scheduler.running:
         scheduler.shutdown(wait=False)
     if qb := Intervals["qb"]:
@@ -211,7 +212,7 @@ async def restart_notification():
 
     async def send_incompelete_task_message(cid, msg):
         try:
-            if msg.startswith("Restarted Successfully!"):
+            if msg.startswith("Mulai ulang berhasil!"):
                 await bot.edit_message_text(
                     chat_id=chat_id, message_id=msg_id, text=msg
                 )
@@ -229,7 +230,7 @@ async def restart_notification():
     if INCOMPLETE_TASK_NOTIFIER and DATABASE_URL:
         if notifier_dict := await DbManager().get_incomplete_tasks():
             for cid, data in notifier_dict.items():
-                msg = "Restarted Successfully!" if cid == chat_id else "Bot Restarted!"
+                msg = "Mulai ulang berhasil!" if cid == chat_id else "Bot Dimulai ulang!"
                 for tag, links in data.items():
                     msg += f"\n\n{tag}: "
                     for index, link in enumerate(links, start=1):
@@ -243,7 +244,7 @@ async def restart_notification():
     if await aiopath.isfile(".restartmsg"):
         try:
             await bot.edit_message_text(
-                chat_id=chat_id, message_id=msg_id, text="Restarted Successfully!"
+                chat_id=chat_id, message_id=msg_id, text="Mulai ulang berhasil!"
             )
         except:
             pass

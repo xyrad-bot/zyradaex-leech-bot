@@ -77,7 +77,7 @@ async def get_telegraph_list(telegraph_content):
     path = [
         (
             await telegraph.create_page(
-                title="Mirror-Leech-Bot Drive Search", content=content
+                title="MeiYongHua Drive Search", content=content
             )
         )["path"]
         for content in telegraph_content
@@ -85,7 +85,7 @@ async def get_telegraph_list(telegraph_content):
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
-    buttons.ubutton("🔎 VIEW", f"https://telegra.ph/{path[0]}")
+    buttons.ubutton("🔎 CEK", f"https://telegra.ph/{path[0]}")
     return buttons.build_menu(1)
 
 
