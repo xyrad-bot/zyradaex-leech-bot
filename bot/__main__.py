@@ -210,7 +210,7 @@ async def restart_notification():
     else:
         chat_id, msg_id = 0, 0
 
-    async def send_incompelete_task_message(cid, msg):
+    async def send_incomplete_task_message(cid, msg):
         try:
             if msg.startswith("Mulai ulang berhasil!"):
                 await bot.edit_message_text(
@@ -236,10 +236,10 @@ async def restart_notification():
                     for index, link in enumerate(links, start=1):
                         msg += f" <a href='{link}'>{index}</a> |"
                         if len(msg.encode()) > 4000:
-                            await send_incompelete_task_message(cid, msg)
+                            await send_incomplete_task_message(cid, msg)
                             msg = ""
                 if msg:
-                    await send_incompelete_task_message(cid, msg)
+                    await send_incomplete_task_message(cid, msg)
 
     if await aiopath.isfile(".restartmsg"):
         try:
