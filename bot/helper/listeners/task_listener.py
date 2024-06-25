@@ -306,7 +306,7 @@ class TaskListener(TaskConfig):
                         INDEX_URL = config_dict["INDEX_URL"]
                     if INDEX_URL:
                         share_url = f"{INDEX_URL}findpath?id={dir_id}"
-                        buttons.ubutton("🚀 Direct Link", share_url)
+                        buttons.ubutton("🔗 Direct Link", share_url)
                         if mime_type.startswith(("image", "video", "audio")):
                             share_urls = f"{INDEX_URL}findpath?id={dir_id}&view=true"
                             buttons.ubutton("🌐 View Link", share_urls)
