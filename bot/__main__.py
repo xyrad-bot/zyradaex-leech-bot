@@ -102,13 +102,13 @@ async def start(client, message):
     if await CustomFilters.authorized(client, message):
         start_string = f"""
 Aku sudah aktif selama {get_readable_time(time() - botStartTime)}
-ketik /{BotCommands.HelpCommand} untuk info bantuan selengkapnya
+ketik /{BotCommands.HelpCommand} untuk membuka bantuan selengkapnya
 """
         await sendMessage(message, start_string, reply_markup)
     else:
         await sendMessage(
             message,
-            "Dih, apa?",
+            "Hi❓, sayangnya kamu gapunya otoritas untuk memanggilku di pm, makasih ",
             reply_markup,
         )
 
