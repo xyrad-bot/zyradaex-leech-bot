@@ -19,6 +19,7 @@ from time import time
 
 from bot import (
     bot,
+    user_data,
     botStartTime,
     LOGGER,
     Intervals,
@@ -95,20 +96,19 @@ async def stats(_, message):
 
 async def start(client, message):
     buttons = ButtonMaker()
-    buttons.ubutton("🛠️Repo", "https://www.github.com/anasty17/mirror-leech-telegram-bot")
-    buttons.ubutton("🏂Owner", "https://t.me/unil_vr")
-    buttons.ubutton("🖥️Channel", "https://t.me/xyradch")
+    buttons.ubutton("Owner", "https://t.me/unil_vr")
+    buttons.ubutton("Channel", "https://t.me/xyradelw")
     reply_markup = buttons.build_menu(2)
     if await CustomFilters.authorized(client, message):
         start_string = f"""
-Mei Yong Hua sudah aktif selama {get_readable_time(time() - botStartTime)}
+Aku sudah aktif selama {get_readable_time(time() - botStartTime)}
 ketik /{BotCommands.HelpCommand} untuk info bantuan selengkapnya
 """
         await sendMessage(message, start_string, reply_markup)
     else:
         await sendMessage(
             message,
-            "Maaf Mei gakenal kamu atau mungkin kamu gak punya otiritas? Pakek Mei di grup, bukan PM!",
+            "Dih, apa?",
             reply_markup,
         )
 
