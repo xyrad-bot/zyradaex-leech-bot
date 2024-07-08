@@ -80,5 +80,5 @@ class TelegraphHelper:
 
 
 telegraph = TelegraphHelper(
-    "meiyonghuabot", "https://t.me/meiyonghuabot"
+    "meiyonghua", "https://t.me/xyradelw"
 )
