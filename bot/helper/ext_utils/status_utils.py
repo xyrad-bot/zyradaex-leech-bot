@@ -215,8 +215,8 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
         buttons.ibutton("status", f"status {sid} ov", position="header")
     if len(tasks) > STATUS_LIMIT:
         msg += f"<b>Page:</b> {page_no}/{pages} | <b>Tasks:</b> {tasks_no} | <b>Step:</b> {page_step}\n"
-        buttons.ibutton("<<", f"status {sid} pre", position="header")
-        buttons.ibutton(">>", f"status {sid} nex", position="header")
+        buttons.ibutton("⫷", f"status {sid} pre", position="header")
+        buttons.ibutton("⫸", f"status {sid} nex", position="header")
         if tasks_no > 30:
             for i in [1, 2, 4, 6, 8, 10, 15]:
                 buttons.ibutton(i, f"status {sid} ps {i}", position="footer")
