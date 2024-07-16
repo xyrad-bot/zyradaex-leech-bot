@@ -12,6 +12,7 @@ from bot import (
     status_dict,
 )
 from bot.helper.ext_utils.bot_utils import sync_to_async
+from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.button_build import ButtonMaker
 
 SIZE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB"]
@@ -203,7 +204,7 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
             msg += f" | <b>Time: </b>{task.seeding_time()}"
         else:
             msg += f"\n<b>Size: </b>{task.size()}"
-        msg += f"\n<b>Stop: </b><code>/cancel {task.gid()}</code>\n\n"
+        msg += f"\n<b>Stop: </b><code>/{BotCommands.CancelTaskCommand[1]} {task.gid()}</code>\n\n"
 
     if len(msg) == 0:
         if status == "All":
