@@ -1002,6 +1002,12 @@ async def load_config():
     except Exception:
         LOGGER.error(f"Wrong USENET_SERVERS format: {USENET_SERVERS}")
         USENET_SERVERS = []
+        
+    MEGA_EMAIL = environ.get("MEGA_EMAIL", "")
+    MEGA_PASSWORD = environ.get("MEGA_PASSWORD", "")
+    if len(MEGA_EMAIL) == 0 or len(MEGA_PASSWORD) == 0:
+        MEGA_EMAIL = ""
+        MEGA_PASSWORD = ""   
 
     FILELION_API = environ.get("FILELION_API", "")
     if len(FILELION_API) == 0:
@@ -1236,6 +1242,8 @@ async def load_config():
             "LEECH_DUMP_CHAT": LEECH_DUMP_CHAT,
             "LEECH_FILENAME_PREFIX": LEECH_FILENAME_PREFIX,
             "LEECH_SPLIT_SIZE": LEECH_SPLIT_SIZE,
+            "MEGA_EMAIL": MEGA_EMAIL,
+            "MEGA_PASSWORD": MEGA_PASSWORD,
             "MEDIA_GROUP": MEDIA_GROUP,
             "MIXED_LEECH": MIXED_LEECH,
             "NAME_SUBSTITUTE": NAME_SUBSTITUTE,

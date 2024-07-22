@@ -33,6 +33,7 @@ from bot.helper.mirror_leech_utils.download_utils.direct_link_generator import (
 )
 from bot.helper.mirror_leech_utils.download_utils.gd_download import add_gd_download
 from bot.helper.mirror_leech_utils.download_utils.jd_download import add_jd_download
+from bot.helper.mirror_utils.download_utils.mega_download import add_mega_download
 from bot.helper.mirror_leech_utils.download_utils.qbit_download import add_qb_torrent
 from bot.helper.mirror_leech_utils.download_utils.nzb_downloader import add_nzb
 from bot.helper.mirror_leech_utils.download_utils.rclone_download import (
@@ -314,6 +315,34 @@ class Mirror(TaskListener):
                         await sendMessage(self.message, e)
                         self.removeFromSameDir()
                         return
+       
+        if (
+            not is_mega_link(self.link)
+            and not self.isNzb
+            and not self.isQbit
+            and not is_magnet(self.link)
+            and not is_rclone_path(self.link)
+            and not is_gdrive_link(self.link)
+            and not self.link.endswith(".torrent")
+            and file_ is None
+            and not is_gdrive_id(self.link)
+        ):
+            content_type = await get_content_type(self.link)
+            if content_type is None or re_match(r"text/html|text/plain", content_type):
+                try:
+                    self.link = await sync_to_async(direct_link_generator, self.link)
+                    if isinstance(self.link, tuple):
+                        self.link, headers = self.link
+                    elif isinstance(self.link, str):
+                        LOGGER.info(f"Generated link: {self.link}")
+                except DirectDownloadLinkException as e:
+                    e = str(e)
+                    if "This link requires a password!" not in e:
+                        LOGGER.info(e)
+                    if e.startswith("ERROR:"):
+                        await sendMessage(self.message, e)
+                        self.removeFromSameDir()
+                        return                
 
         if file_ is not None:
             await TelegramDownloadHelper(self).add_download(
@@ -335,6 +364,8 @@ class Mirror(TaskListener):
             await add_qb_torrent(self, path, ratio, seed_time)
         elif self.isNzb:
             await add_nzb(self, path)
+        elif is_mega_link(self.link):
+            await add_mega_download(self, f"{path}/")    
         elif is_rclone_path(self.link):
             await add_rclone_download(self, f"{path}/")
         elif is_gdrive_link(self.link) or is_gdrive_id(self.link):
