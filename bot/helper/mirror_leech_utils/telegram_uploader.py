@@ -88,7 +88,11 @@ class TelegramUploader:
 
     async def _msg_to_reply(self):
         if self._listener.up_dest:
-            msg = "<b>leech started notif</b>"
+            msg = (
+              f"<b>Task Started:</b> User: {self._listener.message.from_user.mention(style='HTML')} | "
+              f"UID: <code>{self._listener.message.from_user.id}</code> | "
+              f"{'Message: ' + self._listener.message.link if self._listener.is_super_chat else 'Leech started'}"
+              )
             try:
                 if self._user_session:
                     self._sent_msg = await user.send_message(
