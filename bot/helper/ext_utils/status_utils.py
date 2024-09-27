@@ -174,7 +174,8 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
         if tstatus not in [
             MirrorStatus.STATUS_SEEDING,
             MirrorStatus.STATUS_QUEUEUP,
-            MirrorStatus.STATUS_QUEUEDL,
+            MirrorStatus.STATUS_SPLITTING,
+            MirrorStatus.STATUS_SAMVID,
             MirrorStatus.STATUS_CONVERTING
         ]:
             progress = (

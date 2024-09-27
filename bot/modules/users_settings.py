@@ -711,7 +711,7 @@ Check all yt-dlp api options from this <a href='https://github.com/yt-dlp/yt-dlp
             or "lprefix" not in user_dict
             and config_dict["LEECH_FILENAME_PREFIX"]
         ):
-            buttons.data_button("Remove Leech Prefix", f"userset {user_id} lprefix")
+            buttons.data_button("Remove Leech Prefix", f"userset {user_id} lprefix", "header")
         buttons.data_button("Back", f"userset {user_id} leech")
         buttons.data_button("Close", f"userset {user_id} close")
         await edit_message(
@@ -751,7 +751,8 @@ Check all yt-dlp api options from this <a href='https://github.com/yt-dlp/yt-dlp
             and config_dict["THUMBNAIL_LAYOUT"]
         ):
             buttons.data_button(
-                "Reset Thumbnail Layout", f"userset {user_id} thumb_layout"
+                "Reset Thumbnail Layout", f"userset {user_id} thumb_layout",
+                "header"
             )
         buttons.data_button("Back", f"userset {user_id} leech")
         buttons.data_button("Close", f"userset {user_id} close")
