@@ -730,14 +730,15 @@ Check all yt-dlp api options from this <a href='https://github.com/yt-dlp/yt-dlp
             and config_dict["LEECH_DUMP_CHAT"]
         ):
             buttons.data_button(
-                "Reset Leech Destination", f"userset {user_id} leech_dest"
+                "Reset Leech Destination", f"userset {user_id} leech_dest",
+                "header"
             )
         buttons.data_button("Back", f"userset {user_id} leech")
         buttons.data_button("Close", f"userset {user_id} close")
         await edit_message(
             message,
             "Send leech destination ID/USERNAME/PM. Timeout: 60 sec",
-            buttons.build_menu(3),
+            buttons.build_menu(2),
         )
         pfunc = partial(set_option, pre_event=query, option="leech_dest")
         await event_handler(client, query, pfunc)
@@ -770,7 +771,8 @@ Check all yt-dlp api options from this <a href='https://github.com/yt-dlp/yt-dlp
             and global_extension_filter
         ):
             buttons.data_button(
-                "Remove Excluded Extensions", f"userset {user_id} excluded_extensions"
+                "Remove Excluded Extensions", f"userset {user_id} excluded_extensions",
+                "header"
             )
         buttons.data_button("Back", f"userset {user_id} back")
         buttons.data_button("Close", f"userset {user_id} close")
