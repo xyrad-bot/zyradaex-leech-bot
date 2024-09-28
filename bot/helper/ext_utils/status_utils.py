@@ -171,7 +171,11 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
         tstatus = await sync_to_async(task.status) if status == "All" else status
         user_tag = task.listener.tag.replace("@", "").replace("_", " ")
         cancel_task = (f"<b>/{BotCommands.CancelTaskCommand}_{task.gid()}</b>")
-        msg = f"<pre>{tstatus} your task: {escape(task.name())}, please wait...</pre>"
+        if task.listener.is_super_chat:
+            msg += f"<pre><a href='{task.listener.message.link}'>{tstatus}</a>: "
+        else:
+            msg += f"<pre>{tstatus}: "
+        msg += f"{escape(f'{task.name()}')}</pre>"
         if tstatus not in [
             MirrorStatus.STATUS_SPLITTING,
             MirrorStatus.STATUS_SEEDING,
@@ -238,7 +242,6 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
     buttons.data_button("♻️", f"status {sid} ref", position="header")
     button = buttons.build_menu(8)
     msg += (
-        "\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
         f"<b>CPU</b>: {cpu_percent()}% | "
         f"<b>FREE</b>: {get_readable_file_size(disk_usage(DOWNLOAD_DIR).free)}\n"
         f"<b>RAM</b>: {virtual_memory().percent}% | "

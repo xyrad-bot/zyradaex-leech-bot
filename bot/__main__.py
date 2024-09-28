@@ -265,18 +265,14 @@ async def restart_notification():
     if config_dict["INCOMPLETE_TASK_NOTIFIER"] and config_dict["DATABASE_URL"]:
         if notifier_dict := await database.get_incomplete_tasks():
             for cid, data in notifier_dict.items():
-                user_mention = self._listener.message.from_user.mention(style='HTML')
-                msg = "Bot Restarted!"
-                msg += f"\n\nHey {user_mention}, you have pending tasks:"
-
+                msg = "Restarted Successfully!" if cid == chat_id else "Bot Restarted!"
                 for tag, links in data.items():
-                    msg += f"\n{tag}: "
+                    msg += f"\n\nHey {tag}, do your task again!"
                     for index, link in enumerate(links, start=1):
-                        msg += f"<a href='{link}'>{index}</a> "
+                        msg += f"\n{index}. {link}"
                         if len(msg.encode()) > 4000:
                             await send_incomplete_task_message(cid, msg)
                             msg = ""
-
                 if msg:
                     await send_incomplete_task_message(cid, msg)
 
