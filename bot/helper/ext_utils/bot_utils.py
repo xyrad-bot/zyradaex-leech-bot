@@ -175,6 +175,10 @@ async def set_commands(client):
             "Search for something on torrent sites."
         ),
         BotCommand(
+            f"{BotCommands.SelectCommand}",
+            "Choose a specific file from the torrent."
+            ),
+        BotCommand(
             f"{BotCommands.UserSetCommand[0]}",
             "User settings."
         ),
