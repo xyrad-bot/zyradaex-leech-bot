@@ -1,4 +1,5 @@
 from PIL import Image
+from html import escape
 from aioshutil import copy, rmtree
 from asyncio import sleep
 from logging import getLogger
@@ -89,9 +90,11 @@ class TelegramUploader:
     async def _msg_to_reply(self):
         if self._listener.up_dest:
             msg = (
-              f"<b>Task Started:</b> User: {self._listener.message.from_user.mention(style='HTML')} | "
-              f"UID: <code>{self._listener.message.from_user.id}</code> | "
-              f"{'Message: ' + self._listener.message.link if self._listener.is_super_chat else 'Leech started'}"
+              f"<b>======Task Started======</b>"
+              f"\n<b>{escape(self._listener.name)}</code></b>"
+              f"\nUser: {self._listener.message.from_user.mention(style='HTML')}"
+              f"\nUID: <code>{self._listener.message.from_user.id}</code>"
+              f"\n{self._listener.message.link if self._listener.is_super_chat else 'Leech started'}"
               )
             try:
                 if self._user_session:
