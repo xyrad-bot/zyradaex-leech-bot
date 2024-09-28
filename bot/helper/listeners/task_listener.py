@@ -264,9 +264,8 @@ class TaskListener(TaskConfig):
             await database.rm_complete_task(self.message.link)
         msg = (
           f"<b><i>{escape(self.name)}</i></b>\n"
+          f"<b>cc: </b>{self.tag}\n"
           f"\n<code>Size   : </code>{get_readable_file_size(self.size)}"
-          f"\n<code>User   : </code>{self.tag}"
-          f"\n<code>UserID : </code>{self.message.from_user.id}"
           )
         LOGGER.info(f"Task Done: {self.name}")
         if self.is_leech:
@@ -289,6 +288,7 @@ class TaskListener(TaskConfig):
                   await send_message(self.message, msg, button)
         else:
             msg += f"\n<code>Type   : </code>{mime_type}"
+            msg += f"\n<code>Mode   : </code>Mirror"
             if mime_type == "Folder":
                 msg += f"\n<code>Files  : </code>{files}"
             if (
@@ -299,9 +299,9 @@ class TaskListener(TaskConfig):
             ):
                 buttons = ButtonMaker()
                 if link.startswith("https://drive.google.com/") and not config_dict["DISABLE_DRIVE_LINK"]:
-                  buttons.url_button("Drive link ♻️", link, "header")
+                  buttons.url_button("♻️ Drive link", link)
                 elif not link.startswith("https://drive.google.com/"):
-                  buttons.url_button("Cloud link ☁️", link)
+                  buttons.url_button("☁️ Cloud link", link)
                 if (
                     rclonePath
                     and (RCLONE_SERVE_URL := config_dict["RCLONE_SERVE_URL"])
@@ -312,7 +312,7 @@ class TaskListener(TaskConfig):
                     share_url = f"{RCLONE_SERVE_URL}/{remote}/{url_path}"
                     if mime_type == "Folder":
                         share_url += "/"
-                    buttons.url_button("Rclone link 🔗", share_url)
+                    buttons.url_button("🔗 Rclone link", share_url)
                 if not rclonePath and dir_id:
                     INDEX_URL = ""
                     if self.private_link:
@@ -321,18 +321,14 @@ class TaskListener(TaskConfig):
                         INDEX_URL = config_dict["INDEX_URL"]
                     if INDEX_URL:
                         share_url = f"{INDEX_URL}findpath?id={dir_id}"
-                        if config_dict["DISABLE_DRIVE_LINK"]:
-                          buttons.url_button("ᴅɪʀᴇᴄᴛ ʟɪɴᴋ", share_url, "header")
-                        else:
-                          buttons.url_button("Direct link ⚡", share_url)
+                        buttons.url_button("⚡ Index Link", share_url)
                         if mime_type.startswith(("image", "video", "audio")):
                             share_urls = f"{INDEX_URL}findpath?id={dir_id}&view=true"
-                            buttons.url_button("View link 🌐", share_urls)
+                            buttons.url_button("🌐 View Link", share_urls)
                 button = buttons.build_menu(2)
             else:
                 msg += f"\n<code>Path   : </code>{rclonePath}"
                 button = None
-            msg += f"\n\n<b><i>Click the button below to Download</b></i>"
             await send_message(self.message, msg, button)
         if self.seed:
             if self.new_dir:

@@ -19,19 +19,19 @@ SIZE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB"]
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Upload"
-    STATUS_DOWNLOADING = "Download"
-    STATUS_CLONING = "Clone"
-    STATUS_QUEUEDL = "QueueDl"
-    STATUS_QUEUEUP = "QueueUp"
-    STATUS_PAUSED = "Pause"
-    STATUS_ARCHIVING = "Archive"
-    STATUS_EXTRACTING = "Extract"
-    STATUS_SPLITTING = "Split"
-    STATUS_CHECKING = "CheckUp"
-    STATUS_SEEDING = "Seed"
-    STATUS_SAMVID = "SamVid"
-    STATUS_CONVERTING = "Convert"
+    STATUS_UPLOADING = "Uploading"
+    STATUS_DOWNLOADING = "Downloading"
+    STATUS_CLONING = "Cloning"
+    STATUS_QUEUEDL = "Queued"
+    STATUS_QUEUEUP = "Queuing"
+    STATUS_PAUSED = "Paused"
+    STATUS_ARCHIVING = "Archiving"
+    STATUS_EXTRACTING = "Extracting"
+    STATUS_SPLITTING = "Splitting"
+    STATUS_CHECKING = "Checking"
+    STATUS_SEEDING = "Seeding"
+    STATUS_SAMVID = "Sampling"
+    STATUS_CONVERTING = "Converting"
 
 
 STATUSES = {
@@ -151,6 +151,7 @@ def get_progress_bar_string(pct):
 async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=1):
     msg = ""
     button = None
+
     tasks = await sync_to_async(get_specific_tasks, status, sid if is_user else None)
 
     STATUS_LIMIT = config_dict["STATUS_LIMIT"]
@@ -165,23 +166,12 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
     start_position = (page_no - 1) * STATUS_LIMIT
 
     for index, task in enumerate(
-        tasks[start_position:STATUS_LIMIT + start_position], start=1
+        tasks[start_position : STATUS_LIMIT + start_position], start=1
     ):
         tstatus = await sync_to_async(task.status) if status == "All" else status
         user_tag = task.listener.tag.replace("@", "").replace("_", " ")
         cancel_task = (f"<b>/{BotCommands.CancelTaskCommand}_{task.gid()}</b>")
-        if task.listener.is_super_chat:
-            msg += f"<b>{index + start_position}.<a href='{task.listener.message.link}'>{tstatus}</a>: </b>"
-        else:
-            msg += f"<b>{index + start_position}.{tstatus}: </b>"
-
-        task_name = escape(f'{task.name()}')
-        msg += f"<code>{task_name}</code>"
-
-        # Menunggu 10 detik sebelum menyembunyikan nama task
-        await asyncio.sleep(10)
-        msg = msg.replace(task_name, "<code>Hang tight, your task is being processed. Stay chill, it's all under control!</code>")
-
+        msg = f"<pre>{tstatus} your task: {escape(task.name())}, please wait...</pre>"
         if tstatus not in [
             MirrorStatus.STATUS_SPLITTING,
             MirrorStatus.STATUS_SEEDING,
@@ -231,8 +221,6 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
             return None, None
         else:
             msg = f"No Active {status} Tasks!\n\n"
-    
-    # Bagan tombol di bawah status
     buttons = ButtonMaker()
     if not is_user:
         buttons.data_button("📜", f"status {sid} ov", position="header")
@@ -249,7 +237,6 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
                 buttons.data_button(label, f"status {sid} st {status_value}")
     buttons.data_button("♻️", f"status {sid} ref", position="header")
     button = buttons.build_menu(8)
-    
     msg += (
         "\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
         f"<b>CPU</b>: {cpu_percent()}% | "
