@@ -148,7 +148,6 @@ async def status_pages(_, query):
                         dl_speed += speed_string_to_bytes(download.speed())
 
         msg = (
-            f"   𝗥𝗔𝗗𝗟𝗘𝗘𝗖𝗛 𝗕𝗢𝗧 𝗜𝗡𝗙𝗢\n\n"
             f"DL: {tasks['Download']} | "
             f"UP: {tasks['Upload']} | "
             f"SD: {tasks['Seed']} | "
@@ -164,8 +163,9 @@ async def status_pages(_, query):
 
             f"DL: {get_readable_file_size(dl_speed)}/s | " # type: ignore
             f"UL: {get_readable_file_size(up_speed)}/s | " # type: ignore
-            f"SD: {get_readable_file_size(seed_speed)}/s\n" # type: ignore
-            f"BANDWITH USED {get_readable_file_size(net_io_counters().bytes_sent + net_io_counters().bytes_recv)}"
+            f"SD: {get_readable_file_size(seed_speed)}/s\n\n" # type: ignore
+            
+            f"BANDWITH:  {get_readable_file_size(net_io_counters().bytes_sent + net_io_counters().bytes_recv)}"
         )
         await query.answer(
             msg,

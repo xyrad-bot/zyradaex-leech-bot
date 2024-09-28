@@ -148,7 +148,7 @@ Type /{BotCommands.HelpCommand} to see the list of commands.
 @new_task
 async def restart(_, message):
     intervals["stopAll"] = True
-    restart_message = await send_message(message, "sek sabar...")
+    restart_message = await send_message(message, "Stoping Everything...")
     if scheduler.running:
         scheduler.shutdown(wait=False)
     if qb := intervals["qb"]:

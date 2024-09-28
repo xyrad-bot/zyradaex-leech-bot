@@ -12,11 +12,11 @@ from bot import (
     status_dict,
 )
 from .bot_utils import sync_to_async
-from ..telegram_helper.bot_commands import BotCommands
-from ..telegram_helper.filters import CustomFilters
 from ..telegram_helper.button_build import ButtonMaker
+from ..telegram_helper.bot_commands import BotCommands
 
 SIZE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB"]
+
 
 class MirrorStatus:
     STATUS_UPLOADING = "Upload"
@@ -25,13 +25,14 @@ class MirrorStatus:
     STATUS_QUEUEDL = "QueueDl"
     STATUS_QUEUEUP = "QueueUp"
     STATUS_PAUSED = "Pause"
-    STATUS_ARCHIVING = "Archive️"
+    STATUS_ARCHIVING = "Archive"
     STATUS_EXTRACTING = "Extract"
     STATUS_SPLITTING = "Split"
     STATUS_CHECKING = "CheckUp"
     STATUS_SEEDING = "Seed"
     STATUS_SAMVID = "SamVid"
     STATUS_CONVERTING = "Convert"
+
 
 STATUSES = {
     "ALL": "All",
@@ -59,6 +60,7 @@ async def get_task_by_gid(gid: str):
             if tk.gid() == gid:
                 return tk
         return None
+
 
 def get_specific_tasks(status, user_id):
     if status == "All":
@@ -105,6 +107,7 @@ def get_readable_file_size(size_in_bytes):
 
     return f"{size_in_bytes:.2f}{SIZE_UNITS[index]}"
 
+
 def get_readable_time(seconds: int):
     periods = [("d", 86400), ("h", 3600), ("m", 60), ("s", 1)]
     result = ""
@@ -114,9 +117,11 @@ def get_readable_time(seconds: int):
             result += f"{int(period_value)}{period_name}"
     return result
 
+
 def time_to_seconds(time_duration):
     hours, minutes, seconds = map(int, time_duration.split(":"))
     return hours * 3600 + minutes * 60 + seconds
+
 
 def speed_string_to_bytes(size_text: str):
     size = 0
@@ -133,6 +138,7 @@ def speed_string_to_bytes(size_text: str):
         size += float(size_text.split("b")[0])
     return size
 
+
 def get_progress_bar_string(pct):
     pct = float(pct.strip("%"))
     p = min(max(pct, 0), 100)
@@ -140,6 +146,7 @@ def get_progress_bar_string(pct):
     p_str = "█" * cFull
     p_str += "░️" * (12 - cFull)
     return f"{p_str}"
+
 
 async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=1):
     msg = ""
@@ -172,11 +179,11 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
             f"{escape(f'{task.name()}')}</pre>"
             )
         if tstatus not in [
-            MirrorStatus.STATUS_SEEDING,
-            MirrorStatus.STATUS_QUEUEUP,
             MirrorStatus.STATUS_SPLITTING,
+            MirrorStatus.STATUS_SEEDING,
             MirrorStatus.STATUS_SAMVID,
-            MirrorStatus.STATUS_CONVERTING
+            MirrorStatus.STATUS_CONVERTING,
+            MirrorStatus.STATUS_QUEUEUP,
         ]:
             progress = (
                 await task.progress()
@@ -191,7 +198,7 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
                 f"\n<code>Engine :</code> {task.engine}"
                 f"\n<code>ETA    :</code> {task.eta()}"
                 f"\n<code>User   :</code> {user_tag}"
-                f"\n<code>UserID :</code> {task.listener.message.from_user.id}"
+                f"\n<code>UserID :</code> ||{task.listener.message.from_user.id}||"
             )
             if hasattr(task, "seeders_num"):
                 try:
@@ -221,14 +228,12 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
         else:
             msg = f"No Active {status} Tasks!\n\n"
     buttons = ButtonMaker()
-    if is_user:
-        buttons.data_button("ʙᴏᴛ\nʀᴇꜰʀᴇꜱʜ", f"status {sid} ref", position="header")
     if not is_user:
-        buttons.data_button("ʙᴏᴛ\nɪɴꜰᴏ", f"status {sid} ov", position="header")
+        buttons.data_button("📜", f"status {sid} ov", position="header")
     if len(tasks) > STATUS_LIMIT:
         msg += f"<b>Page:</b> {page_no}/{pages} | <b>Tasks:</b> {tasks_no} | <b>Step:</b> {page_step}\n"
-        buttons.data_button("⫷", f"status {sid} pre", position="header")
-        buttons.data_button("⫸", f"status {sid} nex", position="header")
+        buttons.data_button("<<", f"status {sid} pre", position="header")
+        buttons.data_button(">>", f"status {sid} nex", position="header")
         if tasks_no > 30:
             for i in [1, 2, 4, 6, 8, 10, 15]:
                 buttons.data_button(i, f"status {sid} ps {i}", position="footer")
@@ -236,6 +241,7 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
         for label, status_value in list(STATUSES.items())[:9]:
             if status_value != status:
                 buttons.data_button(label, f"status {sid} st {status_value}")
+    buttons.data_button("♻️", f"status {sid} ref", position="header")
     button = buttons.build_menu(8)
     msg += (
         "\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
@@ -245,4 +251,3 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
         f"<b>UPTM</b>: {get_readable_time(time() - botStartTime)}"
     )
     return msg, button
-    
