@@ -1,5 +1,4 @@
 from httpx import AsyncClient
-from random import choice
 from asyncio.subprocess import PIPE
 from functools import partial, wraps
 from concurrent.futures import ThreadPoolExecutor
@@ -190,21 +189,6 @@ async def set_commands(client):
     ]
 
     await client.set_bot_commands(commands)
-
-def safemode_message():
-    messages = [
-        "The future feels so uncertain. Will I find my way?",
-        "What if my dreams fade away as life changes?",
-        "Sometimes, expectations feel too heavy. Will I know what I want?",
-        "I'm scared of making the wrong choices for my future.",
-        "Will I ever find true happiness, or will I always be searching?",
-        "The pressure to succeed is real. What if I fall short?",
-        "I worry that I’ll get stuck in a routine and miss out on life.",
-        "What if I choose a path and realize it's not for me?",
-        "Can I really trust myself to make the right decisions?",
-        "The future seems so far away, yet it feels like it’s closing in."
-    ]
-    return choice(messages)
 
 def arg_parser(items, arg_base):
     if not items:

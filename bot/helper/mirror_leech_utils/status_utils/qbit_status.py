@@ -1,6 +1,6 @@
 from asyncio import sleep, gather
 
-from ...ext_utils.bot_utils import sync_to_async, safemode_message
+from ...ext_utils.bot_utils import sync_to_async
 from bot import LOGGER, qbittorrent_client, qb_torrents, qb_listener_lock
 from ...ext_utils.status_utils import (
     MirrorStatus,
@@ -23,7 +23,6 @@ class QbittorrentStatus:
         self.queued = queued
         self.seeding = seeding
         self.listener = listener
-        self.safemode_msg = safemode_message()
         self._info = None
         self.engine = "qBittorrent"
 

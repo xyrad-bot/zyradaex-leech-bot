@@ -151,7 +151,6 @@ def get_progress_bar_string(pct):
 async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=1):
     msg = ""
     button = None
-
     tasks = await sync_to_async(get_specific_tasks, status, sid if is_user else None)
 
     STATUS_LIMIT = config_dict["STATUS_LIMIT"]
@@ -166,18 +165,23 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
     start_position = (page_no - 1) * STATUS_LIMIT
 
     for index, task in enumerate(
-        tasks[start_position : STATUS_LIMIT + start_position], start=1
+        tasks[start_position:STATUS_LIMIT + start_position], start=1
     ):
         tstatus = await sync_to_async(task.status) if status == "All" else status
         user_tag = task.listener.tag.replace("@", "").replace("_", " ")
         cancel_task = (f"<b>/{BotCommands.CancelTaskCommand}_{task.gid()}</b>")
-        if config_dict['SAFE_MODE']:
-          msg += f"<pre>{tstatus}: {task.safemode_msg}..</pre>"
+        if task.listener.is_super_chat:
+            msg += f"<b>{index + start_position}.<a href='{task.listener.message.link}'>{tstatus}</a>: </b>"
         else:
-          msg = (
-            f"<pre><a href='{task.listener.message.link}'>{tstatus}</a>: "
-            f"{escape(f'{task.name()}')}</pre>"
-            )
+            msg += f"<b>{index + start_position}.{tstatus}: </b>"
+
+        task_name = escape(f'{task.name()}')
+        msg += f"<code>{task_name}</code>"
+
+        # Menunggu 10 detik sebelum menyembunyikan nama task
+        await asyncio.sleep(10)
+        msg = msg.replace(task_name, "<code>Hang tight, your task is being processed. Stay chill, it's all under control!</code>")
+
         if tstatus not in [
             MirrorStatus.STATUS_SPLITTING,
             MirrorStatus.STATUS_SEEDING,
@@ -198,7 +202,7 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
                 f"\n<code>Engine :</code> {task.engine}"
                 f"\n<code>ETA    :</code> {task.eta()}"
                 f"\n<code>User   :</code> {user_tag}"
-                f"\n<code>UserID :</code> ||{task.listener.message.from_user.id}||"
+                f"\n<code>UserID :</code> {task.listener.message.from_user.id}"
             )
             if hasattr(task, "seeders_num"):
                 try:
@@ -227,6 +231,8 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
             return None, None
         else:
             msg = f"No Active {status} Tasks!\n\n"
+    
+    # Bagan tombol di bawah status
     buttons = ButtonMaker()
     if not is_user:
         buttons.data_button("📜", f"status {sid} ov", position="header")
@@ -243,6 +249,7 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
                 buttons.data_button(label, f"status {sid} st {status_value}")
     buttons.data_button("♻️", f"status {sid} ref", position="header")
     button = buttons.build_menu(8)
+    
     msg += (
         "\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"
         f"<b>CPU</b>: {cpu_percent()}% | "
