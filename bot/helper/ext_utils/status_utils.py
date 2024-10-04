@@ -19,19 +19,19 @@ SIZE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB"]
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Uploading"
-    STATUS_DOWNLOADING = "Downloading"
-    STATUS_CLONING = "Cloning"
-    STATUS_QUEUEDL = "Queued"
-    STATUS_QUEUEUP = "Queuing"
+    STATUS_UPLOADING = "Upload"
+    STATUS_DOWNLOADING = "Download"
+    STATUS_CLONING = "Clone"
+    STATUS_QUEUEDL = "QueueDL"
+    STATUS_QUEUEUP = "QueueUP"
     STATUS_PAUSED = "Paused"
-    STATUS_ARCHIVING = "Archiving"
-    STATUS_EXTRACTING = "Extracting"
-    STATUS_SPLITTING = "Splitting"
-    STATUS_CHECKING = "Checking"
-    STATUS_SEEDING = "Seeding"
-    STATUS_SAMVID = "Sampling"
-    STATUS_CONVERTING = "Converting"
+    STATUS_ARCHIVING = "Archive"
+    STATUS_EXTRACTING = "Extract"
+    STATUS_SPLITTING = "Split"
+    STATUS_CHECKING = "Checkup"
+    STATUS_SEEDING = "Seed"
+    STATUS_SAMVID = "SampVid"
+    STATUS_CONVERTING = "Convert"
 
 
 STATUSES = {
@@ -143,9 +143,9 @@ def get_progress_bar_string(pct):
     pct = float(pct.strip("%"))
     p = min(max(pct, 0), 100)
     cFull = int(p // 8)
-    p_str = "█" * cFull
-    p_str += "░️" * (12 - cFull)
-    return f"{p_str}"
+    p_str = "■" * cFull
+    p_str += "□" * (12 - cFull)
+    return f"[{p_str}]"
 
 
 async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=1):
@@ -172,10 +172,10 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
         user_tag = task.listener.tag.replace("@", "").replace("_", " ")
         cancel_task = (f"<b>/{BotCommands.CancelTaskCommand}_{task.gid()}</b>")
         if task.listener.is_super_chat:
-            msg += f"<pre><a href='{task.listener.message.link}'>{tstatus}</a>: "
+            msg += f"<b><a href='{task.listener.message.link}'>{tstatus}</a>:</b> "
         else:
-            msg += f"<pre>{tstatus}: "
-        msg += f"{escape(f'{task.name()}')}</pre>"
+            msg += f"<b>{tstatus}:</b> "
+        msg += f"<code>{escape(f'{task.name()}')}</code>"
         if tstatus not in [
             MirrorStatus.STATUS_SPLITTING,
             MirrorStatus.STATUS_SEEDING,
@@ -218,7 +218,7 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
             msg += (
                 f"\n<code>Size   :</code> {task.size()}"
             )
-        msg += f"\n<blockquote>{cancel_task}</blockquote>\n\n"
+        msg += f"\n{cancel_task}\n\n"
 
     if len(msg) == 0:
         if status == "All":

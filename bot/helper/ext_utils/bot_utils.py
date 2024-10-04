@@ -79,7 +79,7 @@ async def get_telegraph_list(telegraph_content):
     path = [
         (
             await telegraph.create_page(
-                title="𝙓𝙔𝙍𝘼𝘿 𝘿𝙍𝙄𝙑𝙀 𝙎𝙀𝘼𝙍𝘾𝙃", content=content
+                title="Mirror Drive Search ♻️", content=content
             )
         )["path"]
         for content in telegraph_content
