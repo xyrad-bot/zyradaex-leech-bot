@@ -183,7 +183,7 @@ async def get_user_settings(from_user):
     if user_dict:
         buttons.data_button("Reset All", f"userset {user_id} reset")
 
-    buttons.data_button("Close", f"userset {user_id} close")
+    buttons.data_button("Close", f"userset {user_id} close", position="footer")
 
     text = f"""<u>{name}'s User Settings</u>  
 

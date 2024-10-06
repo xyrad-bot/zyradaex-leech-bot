@@ -287,13 +287,13 @@ class TaskListener(TaskConfig):
                 msg += f"\n<code>Corrupt:  </code>{mime_type}"
             buttons = ButtonMaker()
             if not files:
-                buttons.url_button("Open Inbox 📬", f"https://t.me/{bot_name}")
+                buttons.url_button("📨", f"https://t.me/{bot_name}")
                 button = buttons.build_menu(1)
                 await send_message(self.message, msg, button)
             else:
                 for link, name in files.items():
                   if link:
-                    buttons.url_button(f"Open Dump Chat ️📂", link, "header")
+                    buttons.url_button(f"🗑️", link, "header")
                     break
                 if buttons:
                   button = buttons.build_menu(1)
